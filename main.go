@@ -12,7 +12,7 @@ const (
 	GopackDir          = ".gopack"
 	GopackChecksum     = ".gopack/checksum"
 	GopackTestProjects = ".gopack/test-projects"
-	VendorDir          = ".gopack/vendor"
+	VendorDir          = "vendor"
 )
 
 const (
@@ -25,6 +25,7 @@ const (
 
 var (
 	pwd        string
+	gopath	   string
 	showColors = true
 )
 
@@ -34,13 +35,19 @@ func main() {
 	}
 
 	// localize GOPATH
-	setupEnv()
+	//setupEnv()
+	setPwd()
+	gopath = os.Getenv("GOPATH")
+	if gopath == "" {
+		fail("Not get GOPATH env!")
+	}
 
 	p, err := AnalyzeSourceTree(".")
 	if err != nil {
 		fail(err)
 	}
 
+	// get deps
 	config, deps := loadDependencies(".", p)
 
 	if deps == nil {
@@ -48,12 +55,14 @@ func main() {
 	}
 
 	switch os.Args[1] {
-	case "dependencytree":
+	case "tree":
 		deps.PrintDependencyTree()
 	case "stats":
 		p.PrintSummary()
-	case "installdeps":
-		deps.Install(config.Repository)
+	case "get-deps":
+		_ = config
+		//don't need install
+		//deps.Install(config.Repository)
 	default:
 		runCommand()
 	}

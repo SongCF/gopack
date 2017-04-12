@@ -29,7 +29,7 @@ type Scm interface {
 }
 
 func dependencyPath(importPath string) string {
-	return path.Join(pwd, VendorDir, "src", importPath)
+	return path.Join(pwd, VendorDir, importPath)
 }
 
 func scmStageDir(depPath, scmDir string) string {
@@ -49,7 +49,7 @@ func downloadDependency(d *Dep, depPath, scmType string, scm Scm) (err error) {
 		cmd := scm.DownloadCommand(d.Source, depPath)
 
 		if err = cmd.Run(); err != nil {
-			return fmt.Errorf("Error downloading dependency: %s", err)
+			return fmt.Errorf("Error downloading dependency: %s, cmd:%v", err, cmd)
 		}
 	}
 

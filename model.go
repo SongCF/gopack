@@ -204,7 +204,7 @@ func (d *Dep) CheckoutType() string {
 }
 
 func (d *Dep) Src() string {
-	return fmt.Sprintf("%s/%s/src/%s", pwd, VendorDir, d.Import)
+	return path.Join(pwd, VendorDir, d.Import)
 }
 
 // switch the dep to the appropriate branch or tag
@@ -274,7 +274,9 @@ func (d *Dependencies) Validate(p *ProjectStats) []*ProjectError {
 			} else {
 				// report a validation error with the locations in source
 				// where an import is used but unmanaged in gopack.config
-				errors = append(errors, UnmanagedImportError(s))
+
+				//don't check, changed by songcf 2017.4.7
+				//errors = append(errors, UnmanagedImportError(s))
 			}
 		}
 	}
